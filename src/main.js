@@ -23,16 +23,18 @@ new Vue({
 });
 
 router.beforeEach((to, from, next) => {
+  // 是否需要驗證
   if (to.meta.requiresAuth) {
     console.log('這裡需要驗證');
-
     const api = `${process.env.APIPATH}/api/user/check`;
     // 由於在 main.js 無法呼叫元件內的 this，故直接採用 axios
     axios.post(api).then(response => {
       console.log(response.data);
+      // 若登入成功，則前往下個頁面前進
       if (response.data.success) {
         next();
       } else {
+        // 反之，則跳轉至登入頁面
         next({
           path: '/login',
         })
