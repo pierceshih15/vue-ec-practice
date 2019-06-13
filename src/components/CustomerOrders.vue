@@ -333,8 +333,11 @@ export default {
       // vm.isLoading = true;
       this.$validator.validate().then(valid => {
         if (valid) {
-          vm.$http.post(api).then(response => {
+          vm.$http.post(api, { data: order }).then(response => {
             console.log("訂單已建立", response);
+            if (response.data.success) {
+              vm.$router.push(`/customer_checkout/${response.data.orderId}`);
+            }
             // vm.isLoading = false;
           });
         } else {
