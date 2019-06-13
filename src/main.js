@@ -11,8 +11,8 @@ import router from './router'
 Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false;
-// // 儲存 SessionCookie
-// Vue.defaults.withCredentials = true;
+// 儲存 SessionCookie
+Vue.axios.defaults.withCredentials = true;
 
 /* eslint-disable no-new */
 new Vue({
