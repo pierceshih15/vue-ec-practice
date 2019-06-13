@@ -334,6 +334,8 @@ export default {
           if (response.data.success) {
             // 透過 set 語法將 response.data.imageUrl 路徑 寫入 vm.tempProduct 的 imageUrl 欄位
             vm.$set(vm.tempProduct, "imageUrl", response.data.imageUrl);
+          } else {
+            this.$bus.$emit("message:push", response.data.message, "danger");
           }
         });
     }
