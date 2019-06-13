@@ -64,7 +64,10 @@
                   <i class="far fa-trash-alt"></i>
                 </button>
               </td>
-              <td class="align-middle">{{item.product.title}}</td>
+              <td class="align-middle">
+                {{item.product.title}}
+                <div class="text-success" v-if="item.coupon">已套用優惠券</div>
+              </td>
               <td class="align-middle">{{item.qty}} / {{item.product.unit}}</td>
               <td class="align-middle text-right">{{item.final_total}}</td>
             </tr>
@@ -74,12 +77,18 @@
               <td colspan="3" class="text-right">總計</td>
               <td class="text-right">{{ cart.total }}</td>
             </tr>
-            <tr>
+            <tr v-if="cart.final_total !== cart.total">
               <td colspan="3" class="text-right text-success">折扣價</td>
               <td class="text-right text-success">{{ cart.final_total }}</td>
             </tr>
           </tfoot>
         </table>
+        <div class="input-group mb-3 input-group-sm">
+          <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" @click="addCouponCode">套用優惠碼</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -144,6 +153,7 @@ export default {
       products: [],
       product: {},
       cart: {},
+      coupon_code: "",
       status: {
         loadingItem: ""
       },
@@ -211,6 +221,19 @@ export default {
       const vm = this;
       vm.isLoading = true;
       vm.$http.delete(api).then(response => {
+        vm.getCart();
+        vm.isLoading = false;
+      });
+    },
+    addCouponCode() {
+      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/coupon`;
+      const vm = this;
+      const coupon = {
+        code: vm.coupon_code
+      };
+      vm.isLoading = true;
+      vm.$http.post(api, { data: coupon }).then(response => {
+        console.log(response.data);
         vm.getCart();
         vm.isLoading = false;
       });
