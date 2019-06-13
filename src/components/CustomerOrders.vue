@@ -56,7 +56,11 @@
           <tbody>
             <tr v-for="item in cart.carts" :key="item.id" v-if="cart.carts">
               <td class="align-middle">
-                <button type="button" class="btn btn-outline-danger btn-sm">
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  @click="removeCartItem(item.id)"
+                >
                   <i class="far fa-trash-alt"></i>
                 </button>
               </td>
@@ -196,9 +200,19 @@ export default {
       const vm = this;
       vm.isLoading = true;
       vm.$http.get(api).then(response => {
-        console.log("購物車", response.data);
         vm.isLoading = false;
         vm.cart = response.data.data;
+      });
+    },
+    removeCartItem(id) {
+      const api = `${process.env.APIPATH}/api/${
+        process.env.CUSTOMPATH
+      }/cart/${id}`;
+      const vm = this;
+      vm.isLoading = true;
+      vm.$http.delete(api).then(response => {
+        vm.getCart();
+        vm.isLoading = false;
       });
     }
   },
