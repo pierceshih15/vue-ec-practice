@@ -3,16 +3,33 @@
 import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VeeValidate from 'vee-validate';
 import 'bootstrap'
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import './bus';
 import currencyFilter from './filters/currency';
+import VueI18n from 'vue-i18n';
+import zhTW from 'vee-validate/dist/locale/zh_TW';
+
 
 import App from './App'
 import router from './router'
 
 Vue.use(VueAxios, axios)
+Vue.use(VueI18n);
+
+const i18n = new VueI18n({
+  locale: 'zhTW'
+});
+
+Vue.use(VeeValidate, {
+  i18n,
+  dictionary: {
+    zhTW
+  }
+});
+
 // 套用全域使用
 Vue.component('Loading', Loading);
 Vue.filter('currency', currencyFilter);
@@ -23,6 +40,7 @@ Vue.axios.defaults.withCredentials = true;
 
 /* eslint-disable no-new */
 new Vue({
+  i18n,
   el: '#app',
   router,
   components: {

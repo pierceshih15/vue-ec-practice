@@ -152,11 +152,11 @@
             class="form-control"
             name="email"
             id="useremail"
+            v-validate="'required|email'"
             v-model="form.user.email"
             placeholder="請輸入 Email"
-            required
           >
-          <span class="text-danger"></span>
+          <span class="text-danger" v-if="errors.has('email')">{{errors.first('email')}}</span>
         </div>
 
         <div class="form-group">
@@ -166,21 +166,27 @@
             class="form-control"
             name="name"
             id="username"
+            :class="{'is-invalid':errors.has('name')}"
             v-model="form.user.name"
+            v-validate="'required'"
             placeholder="輸入姓名"
           >
-          <span class="text-danger"></span>
+          <span class="text-danger" v-if="errors.has('name')">姓名必須輸入</span>
         </div>
 
         <div class="form-group">
           <label for="usertel">收件人電話</label>
           <input
             type="tel"
+            name="tel"
             class="form-control"
             id="usertel"
+            :class="{'is-invalid':errors.has('tel')}"
             v-model="form.user.tel"
+            v-validate="'required'"
             placeholder="請輸入電話"
           >
+          <span class="text-danger" v-if="errors.has('tel')">電話必須輸入</span>
         </div>
 
         <div class="form-group">
@@ -190,10 +196,12 @@
             class="form-control"
             name="address"
             id="useraddress"
+            :class="{'is-invalid':errors.has('address')}"
             v-model="form.user.address"
+            v-validate="'required'"
             placeholder="請輸入地址"
           >
-          <span class="text-danger">地址欄位不得留空</span>
+          <span class="text-danger" v-if="errors.has('address')">地址欄位不得留空</span>
         </div>
 
         <div class="form-group">
@@ -322,10 +330,16 @@ export default {
       const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/order`;
       const vm = this;
       const order = vm.form;
-      vm.isLoading = true;
-      vm.$http.post(api).then(response => {
-        console.log("訂單已建立", response);
-        vm.isLoading = false;
+      // vm.isLoading = true;
+      this.$validator.validate().then(valid => {
+        if (valid) {
+          vm.$http.post(api).then(response => {
+            console.log("訂單已建立", response);
+            // vm.isLoading = false;
+          });
+        } else {
+          console.log("欄位不完整");
+        }
       });
     }
   },
