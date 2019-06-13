@@ -18,8 +18,8 @@
         <tr v-for="(item) in products" :key="item.id">
           <td>{{item.category}}</td>
           <td>{{item.title}}</td>
-          <td class="text-right">{{item.origin_price}}</td>
-          <td class="text-right">{{item.price}}</td>
+          <td class="text-right">{{item.origin_price | currency}}</td>
+          <td class="text-right">{{item.price | currency}}</td>
           <td>
             <span v-if="item.is_enabled" class="text-success">啟用</span>
             <span v-else>未啟用</span>
@@ -37,7 +37,12 @@
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         <li class="page-item" :class="{'disabled':!pagination.has_pre}">
-          <a class="page-link" href="#" aria-label="Previous" @click.prevent="getProducts(pagination.current_page -1)">
+          <a
+            class="page-link"
+            href="#"
+            aria-label="Previous"
+            @click.prevent="getProducts(pagination.current_page -1)"
+          >
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
@@ -50,7 +55,12 @@
           <a class="page-link" href="#" @click.prevent="getProducts(page)">{{page}}</a>
         </li>
         <li class="page-item" :class="{'disabled': !pagination.has_next}">
-          <a class="page-link" href="#" aria-label="Next" @click.prevent="getProducts(pagination.current_page +1)">
+          <a
+            class="page-link"
+            href="#"
+            aria-label="Next"
+            @click.prevent="getProducts(pagination.current_page +1)"
+          >
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
