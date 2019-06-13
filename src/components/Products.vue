@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading :active.sync="isLoading"></loading>
     <div class="text-right mt-4">
       <button class="btn btn-primary" @click="openModal(true)">建立新的產品</button>
     </div>
@@ -68,7 +69,7 @@
                 <div class="form-group">
                   <label for="customFile">
                     或 上傳圖片
-                    <i class="fas fa-spinner fa-spin"></i>
+                    <i class="fas fa-spinner fa-spin" v-if="status.fileUploading"></i>
                   </label>
                   <input
                     type="file"
@@ -228,7 +229,11 @@ export default {
     return {
       products: [],
       tempProduct: [],
-      isNew: false
+      isNew: false,
+      isLoading: false,
+      status: {
+        fileUploading: false
+      }
     };
   },
   methods: {
@@ -237,8 +242,10 @@ export default {
         process.env.CUSTOMPATH
       }/products`;
       const vm = this;
+      vm.isLoading = true;
       vm.$http.get(api).then(response => {
         console.log(response.data);
+        vm.isLoading = false;
         vm.products = response.data.products;
       });
     },
@@ -312,6 +319,7 @@ export default {
       const url = `${process.env.APIPATH}/api/${
         process.env.CUSTOMPATH
       }/admin/upload`;
+      vm.status.fileUploading = true;
       // 透過 $http 將 formData 傳送至 API url
       this.$http
         .post(url, formData, {
@@ -322,6 +330,7 @@ export default {
         })
         .then(response => {
           console.log(response.data);
+          vm.status.fileUploading = false;
           if (response.data.success) {
             // 透過 set 語法將 response.data.imageUrl 路徑 寫入 vm.tempProduct 的 imageUrl 欄位
             vm.$set(vm.tempProduct, "imageUrl", response.data.imageUrl);
