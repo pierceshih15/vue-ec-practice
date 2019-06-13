@@ -70,7 +70,13 @@
                     或 上傳圖片
                     <i class="fas fa-spinner fa-spin"></i>
                   </label>
-                  <input type="file" id="customFile" class="form-control" ref="files">
+                  <input
+                    type="file"
+                    id="customFile"
+                    class="form-control"
+                    ref="files"
+                    @change="uploadFile"
+                  >
                 </div>
                 <img
                   img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80"
@@ -294,6 +300,33 @@ export default {
           $("#delProductModal").modal("hide");
         }
       });
+    },
+    uploadFile() {
+      console.log(this);
+      const uploadedFile = this.$refs.files.files[0];
+      const vm = this;
+      // 使用 new FormData() 處理照片上傳的行為
+      const formData = new FormData();
+      // 將 formData 傳至 API file-to-upload 欄位儲存
+      formData.append("file-to-upload", uploadedFile);
+      const url = `${process.env.APIPATH}/api/${
+        process.env.CUSTOMPATH
+      }/admin/upload`;
+      // 透過 $http 將 formData 傳送至 API url
+      this.$http
+        .post(url, formData, {
+          // 修改檔案格式，以 multipart/form-data 格式上傳
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(response => {
+          console.log(response.data);
+          if (response.data.success) {
+            // 透過 set 語法將 response.data.imageUrl 路徑 寫入 vm.tempProduct 的 imageUrl 欄位
+            vm.$set(vm.tempProduct, "imageUrl", response.data.imageUrl);
+          }
+        });
     }
   },
   created() {
